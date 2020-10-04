@@ -1,0 +1,154 @@
+import java.security.*;
+import java.util.Scanner;
+
+
+public class BackGround {
+	public  interface Encryption{
+		public String encryping(String info, int shift);
+		public String decryping(String info, int shift);
+	}
+	
+	
+	public static class CaesarEncryption implements Encryption{
+		public String encryping(String info, int shift){
+			//凯撒加密
+			//获取字母对应数字
+			//处理字母、数字
+			//return something
+			StringBuffer sbuffer = new StringBuffer("");
+			int eachcharnum;
+			int buffer;
+			int lengths = info.length();
+			for(int a = 0;a < lengths;a++){
+				eachcharnum = Integer.valueOf(info.charAt(a));
+				if (eachcharnum > 64 && eachcharnum <91){
+					buffer = eachcharnum - 64 + shift;
+					buffer =  buffer % 27;
+					eachcharnum = buffer + 64;
+				}//大写字母处理
+				else if (eachcharnum > 96 && eachcharnum < 123){
+					buffer = eachcharnum - 96 + shift;
+					buffer =  buffer % 27 ;
+					eachcharnum = buffer + 96 ;
+				}//小写字母处理
+				else if (eachcharnum > 47 && eachcharnum < 58){
+					buffer = eachcharnum - 47 + shift;
+					buffer =  buffer % 11 ;
+					eachcharnum = buffer + 47 ;
+				}else{
+					eachcharnum = eachcharnum;
+				}//数字处理
+				sbuffer.append((char) eachcharnum);	
+			}
+		System.out.println(sbuffer);
+		return "";
+		}
+		public String decryping(String info, int shift){
+			//凯撒解密
+			//凯撒加密逆过程
+			StringBuffer sbuffer = new StringBuffer("");
+			int eachcharnum;
+			int buffer;
+			int lengths = info.length();
+			for(int a = 0;a < lengths;a++){
+				eachcharnum = Integer.valueOf(info.charAt(a));
+				if (eachcharnum > 64 && eachcharnum <91){
+					buffer = eachcharnum - 64 - shift;//‘+’改为‘-’
+					buffer =  buffer % 27 ;
+					eachcharnum = buffer + 64 ;
+				}//大写字母处理
+				else if (eachcharnum > 96 && eachcharnum < 123){
+					buffer = eachcharnum - 96 - shift;//‘+’改为‘-’
+					buffer =  buffer % 27 ;
+					eachcharnum = buffer + 96 ;
+				}//小写字母处理
+				else if (eachcharnum > 47 && eachcharnum < 58){
+					buffer = eachcharnum - 47 - shift;//‘+’改为‘-’
+					buffer =  buffer % 11 ;
+					eachcharnum = buffer + 47 ;
+				}else{
+					eachcharnum = eachcharnum;
+				}//数字处理
+				sbuffer.append((char) eachcharnum);	
+			}
+		System.out.println(sbuffer);
+		return "";
+		}
+	}
+	
+	public static class Md5Encryption implements Encryption{
+		public String encryping(String info, int shift){
+			//md5加密
+			try{
+			MessageDigest m=MessageDigest.getInstance("MD5");
+    		m.update(info.getBytes("GBK"));
+    		byte s[ ]=m.digest( );
+    		String result="";
+    		for (int i=0; i<s.length;i++){
+    		   result+=Integer.toHexString((0x000000ff & s[i]) | 0xffffff00).substring(6);
+			}
+			System.out.println(result);
+			}catch(Exception e){
+				return null;
+			}
+			return "";
+		}
+		public String decryping(String info, int shift) throws UnsupportedOperationException{
+			//md5解密
+			//catch 需要使用
+			//throw 需要使用 || MD5 算法无法解密 || UnsupportedOperationException
+			throw new UnsupportedOperationException("MD5 算法无法解密");
+			//不知道上面这一句放在这个函数位置，还是放在main函数位置	？？？？？
+		}
+	}
+	
+    public static void main(String[] args) {
+        //this is what you need to add
+		//获取用户输入
+		//使用if，判断用户输入
+		//如果是凯撒，再获取偏移量	（默认值为3（暂不实现））
+		//判断完后，获取用户字段信息
+		//返回处理信息
+		String info;//需要获取
+		Byte shift;//需要获取（按需）
+		Scanner sc = new Scanner(System.in);
+		Scanner scinfo = new Scanner(System.in);
+		System.out.println("1、凯撒加密 2、凯撒解密 3、MD5加密 4、MD5解密 5、退出 \n 请输入你要的选项：");//提示选项
+		Byte num = sc.nextByte();//1、凯撒加密 2、凯撒解密 3、MD5加密 4、MD5解密 5、退出
+		if(num == 1){
+			System.out.println("你选择了 凯撒加密 \n 请输入偏移量：");
+			shift = sc.nextByte();
+			System.out.println("输入加密内容：");
+			info = scinfo.nextLine();
+			CaesarEncryption ec = new CaesarEncryption();
+			ec.encryping(info, shift);
+			
+		}else if(num == 2){
+			System.out.println("你选择了 凯撒解密 \n 请输入之前的偏移量：");
+			shift = sc.nextByte();
+			System.out.println("输入加密内容：");
+			info = scinfo.nextLine();
+			CaesarEncryption ec = new CaesarEncryption();
+			ec.decryping(info, shift);
+		}else if(num == 3){
+			System.out.println("你选择了 MD5加密 \n 请输入你要加密加密的内容:");
+			info = scinfo.nextLine();
+			int st = 0;
+			Md5Encryption md5 = new Md5Encryption();
+			md5.encryping(info,st);
+			
+		}else if(num == 4){
+			System.out.println("你选择了 MD5加密");
+			int st = 0;
+			String s = "";
+			Md5Encryption md5 = new Md5Encryption();
+			try{
+				md5.encryping(s,st);
+			}catch(UnsupportedOperationException e){
+				throw new UnsupportedOperationException("MD5 算法无法解密");
+			}
+		}else if(num == 5){
+			return;
+		}
+	}
+}
